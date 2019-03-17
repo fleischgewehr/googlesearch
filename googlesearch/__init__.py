@@ -230,6 +230,8 @@ def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
     :rtype: generator of str
     :return: Generator (iterator) that yields found URLs.
         If the stop parameter is None the iterator will loop forever.
+        If the detailed parameter is True the function will return 
+        a generator of tuples (description, link).
     """
     # Set of hashes for the results found.
     # This is used to avoid repeated results.
@@ -333,12 +335,13 @@ def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
             if detailed:
                 try:
                     description = a.text
-                    yield (link, description)
+                    yield (description, link)
                 except:
                     pass
 
-            # Yield the result.
-            yield link
+            # Otherwise yield just link.
+            else:
+                yield link
 
             count += 1
             if stop and count >= stop:
