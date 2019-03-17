@@ -192,7 +192,7 @@ def filter_result(link):
 # Returns a generator that yields URLs.
 def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
            stop=None, domains=None, pause=2.0, only_standard=False,
-           extra_params={}, tpe='', user_agent=None):
+           extra_params={}, tpe='', user_agent=None, detailed=False):
     """
     Search the given query string using Google.
 
@@ -224,6 +224,8 @@ def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
         news: 'nws', shopping: 'shop', books: 'bks', applications: 'app'}
     :param str or None user_agent: User agent for the HTTP requests.
         Use None for the default.
+    :param bool detailed: If True, attaches parsed description to each link
+        from Google search. If False, returns only links.
 
     :rtype: generator of str
     :return: Generator (iterator) that yields found URLs.
@@ -326,6 +328,14 @@ def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
             if h in hashes:
                 continue
             hashes.add(h)
+
+            # Parse link description if it was requested by user.
+            if detailed:
+                try:
+                    description = a.text
+                    yield (link, description)
+                except:
+                    pass
 
             # Yield the result.
             yield link
