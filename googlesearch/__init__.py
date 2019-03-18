@@ -33,6 +33,7 @@ import random
 import sys
 import time
 import math
+import asyncio
 
 if sys.version_info[0] > 2:
     from http.cookiejar import LWPCookieJar
@@ -190,7 +191,7 @@ def filter_result(link):
 
 
 # Returns a generator that yields URLs.
-def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
+async def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
            stop=None, domains=None, pause=2.0, only_standard=False,
            extra_params={}, tpe='', user_agent=None, detailed=False):
     """
@@ -286,7 +287,7 @@ def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
             url += url + ('&%s=%s' % (k, v))
 
         # Sleep between requests.
-        time.sleep(pause)
+        await asyncio.sleep(pause)
 
         # Request the Google Search results page.
         html = get_page(url, user_agent)
